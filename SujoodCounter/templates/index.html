@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rakat Counter</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+        #device-selector {
+            font-size: 4vw; /* Responsive font size */
+            margin: 10px;
+            display: none; /* Initially hidden */
+        }
+        #rakat-count {
+            font-size: 160vw; /* Very large font size for the count */
+            font-weight: bold;
+            line-height: 1; /* Adjust line height to fit the huge text on screen */
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            position: relative; /* Needed for absolute positioning of the button */
+        }
+        button {
+            font-size: 4vw; /* Smaller font size for buttons */
+            padding: 0.5em 1em;
+            cursor: pointer;
+            border: none;
+            background-color: white;
+            color: blue;
+            position: absolute; /* Positioning it over the number */
+            bottom: 0; /* Align to the bottom of the parent div */
+            width: 100%; /* Same width as the count div */
+            display: none; /* Hide by default */
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <select id="device-selector" onchange="selectDevice(this.value)">
+        <option value="">Select a Device</option>
+    </select>
+    <div id="rakat-count">0</div> <!-- Default count set to 0 -->
+    <button id="auto-reset-button" onclick="resetCount()">Start New Prayer</button>
+    <script>
+        function fetchRakatCount() {
+            const selectedDevice = document.getElementById('device-selector').value;
+                fetch(`/count`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('rakat-count').innerText = data.rakat_count;
+                        // Show the reset button when the count reaches 2 or more
+                        document.getElementById('auto-reset-button').style.display = data.rakat_count >= 2 ? 'block' : 'none';
+                    })
+                    .catch(err => console.error('Error fetching rakat count:', err));
+        }
+
+        setInterval(fetchRakatCount, 1000); // Refresh every second
+        
+        function resetCount() {
+            const selectedDevice = document.getElementById('device-selector').value;
+            fetch(`/reset`, { method: 'POST' })
+                .then(() => {
+                    console.log('Counter reset successfully');
+                    document.getElementById('auto-reset-button').style.display = 'none'; // Hide the button after reset
+                })
+                .catch(err => console.error('Error resetting the counter:', err));
+        }
+
+        function selectDevice(deviceName) {
+            fetchRakatCount(); // Refresh the count when a new device is selected
+        }
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                if ('wakeLock' in navigator) {
+                    navigator.wakeLock.request('screen').catch(err => console.error('WakeLock error:', err));
+                }
+            }
+        });
+    </script>
+</body>
+</html>
