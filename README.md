@@ -2,7 +2,7 @@
 
 This is an engineering product by @debugdeem.
 
-Background: Muslims are required to pray 5 times a day. The prayer is made of units called rakats. Each rakat (bowing) includes 1 ruku and 2 sajdas/sujoods (prostration). A sajda is when the forehead touches the prayer mat. The five daily prayers have different rakats for each time of day.
+Background: Muslims are required to pray 5 times a day. The prayer is made up of units called rakats. Each rakat includes 1 ruku (bowing) and 2 sajdas/sujoods (prostration). A sajda is when the forehead touches the prayer mat. The five daily prayers have different rakats for each time of day.
 
 Fajr (morning prayer): 2 rakat
 Zuhr (early afternoon prayer): 4 rakat
